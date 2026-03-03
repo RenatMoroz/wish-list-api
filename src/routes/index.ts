@@ -1,10 +1,10 @@
-import { Router } from "express";
-import authRouter from "./auth.js";
-import newsRouter from "./news.js";
+import { Router } from 'express';
+import authRouter from './auth.js';
+import categoryRouter from './category.js';
 
 const router = Router();
 
-router.use("/auth", authRouter);
-router.use("/news", newsRouter);
+router.use('/auth', authRouter);
+router.use('/category', categoryRouter);
 
 export default router;
