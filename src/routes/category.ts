@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import * as categoryController from '../controllers/categoryController.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import * as itemController from '../controllers/itemCategoryController.js';
 
 const router = Router();
 
@@ -11,6 +12,7 @@ router.get(
   authenticate,
   categoryController.getWishListCategoryId,
 );
+router.get('/:categoryId/items', authenticate, itemController.getItemCategory);
 router.patch(
   '/:categoryId',
   authenticate,

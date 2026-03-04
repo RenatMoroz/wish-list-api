@@ -10,8 +10,8 @@ export const createWishListCategory = async (body: CreateCategory) => {
   return item;
 };
 
-export const getWishListCategory = (params: GetCategoryParams = {}) => {
-  const items = CategoryCollection.find(params);
+export const getWishListCategory = async (params: GetCategoryParams = {}) => {
+  const items = await CategoryCollection.find(params);
   return items;
 };
 
