@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { CategoryCollection } from '../database/models/category.js';
 import {
   CreateCategory,
@@ -10,25 +11,66 @@ export const createWishListCategory = async (body: CreateCategory) => {
   return item;
 };
 
-export const getWishListCategory = async (params: GetCategoryParams = {}) => {
-  const items = await CategoryCollection.find(params);
+export const getWishListCategory = async (
+  params: GetCategoryParams = {},
+  _id: Types.ObjectId,
+) => {
+  const query: GetCategoryParams = {
+    userId: _id.toString(),
+  };
+  if (params.title) {
+    query.title = params.title;
+  }
+  if (params.background) {
+    query.background = params.background;
+  }
+  if (params.description) {
+    query.description = params.description;
+  }
+  const items = await CategoryCollection.find(query);
   return items;
 };
 
-export const getWishListCategoryId = async (id: string) => {
-  const item = await CategoryCollection.findById(id);
-  return item;
+export const getWishListCategoryId = async (
+  categoryId: string,
+  userId: Types.ObjectId,
+) => {
+  const category = await CategoryCollection.findOne({
+    _id: categoryId,
+    userId: userId.toString(),
+  });
+
+  return category;
 };
 
 export const updateWishListCategory = async (
-  id: string,
+  categoryId: string,
+  userId: Types.ObjectId,
   body: UpdateCategory,
 ) => {
-  const item = await CategoryCollection.findByIdAndUpdate(id, body);
-  return item;
-};
+  const category = await CategoryCollection.findOne({
+    _id: categoryId,
+    userId: userId.toString(),
+  });
 
-export const deleteWishListCategory = async (id: string) => {
-  const item = await CategoryCollection.findByIdAndDelete(id);
-  return item;
+  if (!category) return null;
+
+  if (body.title !== undefined) category.title = body.title;
+  if (body.description !== undefined) category.description = body.description;
+  if (body.background !== undefined) category.background = body.background;
+
+  await category.save();
+
+  return category;
+};
+export const deleteWishListCategory = async (
+  categoryId: string,
+  userId: Types.ObjectId,
+) => {
+  const deletedCategory = await CategoryCollection.findOneAndDelete({
+    _id: categoryId,
+    userId: userId.toString(),
+  });
+
+  return deletedCategory;
 };
